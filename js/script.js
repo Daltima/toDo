@@ -5,18 +5,19 @@ const todoControl = document.querySelector('.todo-control'),
     todoList = document.querySelector('.todo-list'),
     todoCompleted = document.querySelector('.todo-completed');
 
-//хранилище дел    
-const todoData = [];
+//хранилище дел(todoData), получаем данные массива дел из localStorage
+let todoData = JSON.parse(localStorage.getItem("todoData") || "[]");
 
 //функция, которая добавляет дела на страницу
 const render = function() {
+    
     todoList.textContent = '';
     todoCompleted.textContent = '';
 
     todoData.forEach(function(item){
+        
         const li = document.createElement('li');
         li.classList.add('todo-item');
-
         li.innerHTML = '<span class="text-todo">' + item.value + '</span>' +
         '<div class="todo-buttons">' +
             '<button class="todo-remove"></button>' +
@@ -27,29 +28,25 @@ const render = function() {
         } else {
             todoList.append(li);
         }
-
+        //смена статуса задачи при клике на кнопку
         const btnTodoComplete = li.querySelector('.todo-complete');
 
         btnTodoComplete.addEventListener('click', function(){
             item.completed = !item.completed;
             render();
         });
+        //удаление задач по клику на корзину
         const  btnTodoRemove = li.querySelector('.todo-remove');
-
-        btnTodoRemove.addEventListener('click', function(item){
-            console.log('item: ', item);
-            console.log('li: ', li);
-            li.remove();   
         
+        btnTodoRemove.addEventListener('click', function(){
+            todoData.splice(todoData.indexOf(item), 1);
+            render();
         });
-        // const showArray = function() {
-
-        // }
-        console.log('todoData: ', todoData);
+        //вносим данные в localStorage
+        localStorage.setItem("todoData", JSON.stringify(todoData));
+       
     });
 };
-
-console.log('todoData: ', todoData);
 
 // отменяем стандартное пведение браузера (перезагрузка страницы при нажатии на плюс)
 // и в массив todoData добавляем новое дело (новый объект)
@@ -62,13 +59,14 @@ todoControl.addEventListener('submit', function(event){
     };
     //Проверка поля инпута на заполненность и очистка поля после добавления задачи
     if (headerInput.value.trim() !== '') {
+
         todoData.push(newTodo);
         headerInput.value = '';
     } else {
         alert('Введите задачу, которую необходимо выполнить.');
     }
+
     render();
 });
 
 render();
-// JSON.parse(localStorage.getItem("todoData");
