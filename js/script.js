@@ -40,6 +40,7 @@ const render = function() {
         
         btnTodoRemove.addEventListener('click', function(){
             todoData.splice(todoData.indexOf(item), 1);
+            localStorage.setItem("todoData", JSON.stringify(todoData));
             render();
         });
         //вносим данные в localStorage
@@ -48,7 +49,7 @@ const render = function() {
     });
 };
 
-// отменяем стандартное пведение браузера (перезагрузка страницы при нажатии на плюс)
+// отменяем стандартное поведение браузера (перезагрузка страницы при нажатии на плюс)
 // и в массив todoData добавляем новое дело (новый объект)
 todoControl.addEventListener('submit', function(event){
     event.preventDefault();
